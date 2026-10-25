@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { AIController } from '../controllers/aiController.js';
 import { DashboardController } from '../controllers/dashboardController.js';
 import { LeaderboardController } from '../controllers/leaderboardController.js';
@@ -9,7 +9,7 @@ import { geminiService } from '../services/gemini.js';
 export const apiRouter = Router();
 
 // Health check endpoint
-apiRouter.get('/health', (req, res) => {
+apiRouter.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     service: 'PatchMyCity API',

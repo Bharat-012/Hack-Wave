@@ -20,7 +20,7 @@ app.use(
 // CORS allowlist
 app.use(
   cors({
-    origin: (origin, callback) => {
+    origin: (origin: any, callback: any) => {
       // Allow local development, Vite dev server, or same-origin
       if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
         callback(null, true);
