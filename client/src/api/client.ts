@@ -8,7 +8,8 @@ import {
   UserProfile,
 } from '../types/index.js';
 
-const API_BASE = '/api/v1';
+const RAW_BASE = import.meta.env.VITE_API_URL ? String(import.meta.env.VITE_API_URL).replace(/\/$/, '') : '';
+const API_BASE = `${RAW_BASE}/api/v1`;
 
 async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -30,7 +31,7 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   // Health
-  getHealth: () => fetch('/api/v1/health').then((r) => r.json()),
+  getHealth: () => fetch(`${RAW_BASE}/api/v1/health`).then((r) => r.json()),
 
   // Reports
   getReports: (params?: { status?: string; category?: string; is_demo?: boolean }) => {
