@@ -5,6 +5,20 @@ Format follows Keep a Changelog (Added, Changed, Fixed, Security).
 
 ---
 
+## [1.1.0] - 2026-10-25
+
+### Changed
+- **Geographic Center Localized to Bhopal, MP:**
+  - Shifted default interactive map center to Bhopal civic coordinates (`23.2599, 77.4126`).
+  - Seed demo reports and active quests updated to prominent Bhopal landmarks: MP Nagar Zone-1, VIP Road Lake Promenade, and New Market TT Nagar.
+  - Report pin selection default coordinates and address placeholders updated to Bhopal.
+
+### Fixed
+- **PostCSS Glass Shadow HMR Issue:**
+  - Resolved `shadow-glass class does not exist` Vite/PostCSS error by defining native CSS box-shadow properties and utilities in `client/src/index.css`.
+
+---
+
 ## [1.0.0] - 2026-10-25
 
 ### Added
