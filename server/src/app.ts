@@ -1,7 +1,9 @@
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import fs from 'fs';
 import helmet from 'helmet';
+import path from 'path';
 import { ENV } from './config/env.js';
 import { apiRouter } from './routes/api.js';
 
@@ -52,6 +54,23 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Mount Versioned API Routes
 app.use('/api/v1', apiRouter);
+
+// Serve built React client if available (All-in-One Deployment Mode)
+const possibleDistPaths = [
+  path.resolve(process.cwd(), 'client/dist'),
+  path.resolve(process.cwd(), '../client/dist'),
+];
+const clientDistPath = possibleDistPaths.find((p) => fs.existsSync(path.join(p, 'index.html')));
+
+if (clientDistPath) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
 
 // Centralized 404 Handler
 app.use((req: Request, res: Response) => {
