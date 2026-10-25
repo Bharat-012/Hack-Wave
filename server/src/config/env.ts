@@ -12,7 +12,7 @@ const envSchema = z.object({
   CLIENT_URL: z.string().default('http://localhost:5173'),
   GEMINI_API_KEY: z.string().optional().default(''),
   Gemini_api_key: z.string().optional().default(''),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-3.5-flash'),
   RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform(Number),
   RATE_LIMIT_MAX_REQUESTS: z.string().default('200').transform(Number),
 });
