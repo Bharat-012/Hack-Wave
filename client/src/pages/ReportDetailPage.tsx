@@ -13,6 +13,8 @@ import {
   Sparkles,
   ArrowLeft,
   Upload,
+  User,
+  Zap,
 } from 'lucide-react';
 import { api } from '../api/client.js';
 import { Report, ReportEvent, ReportEvidence } from '../types/index.js';
@@ -89,7 +91,7 @@ export const ReportDetailPage: React.FC = () => {
     return (
       <div className="py-24 text-center space-y-3">
         <RefreshCw className="w-8 h-8 text-forest-700 animate-spin mx-auto" />
-        <p className="text-stone-500 font-medium text-sm">Loading issue details...</p>
+        <p className="text-stone-500 font-bold text-sm">Loading issue file...</p>
       </div>
     );
   }
@@ -99,39 +101,41 @@ export const ReportDetailPage: React.FC = () => {
       {/* Back Link */}
       <Link
         to="/explore"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 hover:text-stone-900"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-600 hover:text-stone-900 transition-colors"
       >
-        <ArrowLeft className="w-3.5 h-3.5" />
+        <ArrowLeft className="w-4 h-4 text-quest" />
         Back to Ledger & Map
       </Link>
 
       {/* Main Issue Header Card */}
-      <div className="bg-white rounded-3xl border border-cream-300 p-6 sm:p-8 shadow-2xs space-y-6">
-        <div className="flex flex-col md:flex-row gap-6">
-          <img
-            src={report.image_url}
-            alt={report.title}
-            className="w-full md:w-80 h-64 object-cover rounded-2xl border border-stone-200 shrink-0"
-          />
+      <div className="glass-card rounded-3xl p-6 sm:p-10 space-y-6">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="relative md:w-96 shrink-0">
+            <img
+              src={report.image_url}
+              alt={report.title}
+              className="w-full h-72 object-cover rounded-2xl border border-stone-200/80 shadow-md"
+            />
+            {report.is_demo && (
+              <span className="absolute top-3 left-3 bg-amber-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-xs">
+                Demo Fixture
+              </span>
+            )}
+          </div>
 
           <div className="flex flex-col justify-between space-y-4 flex-1">
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
                 <StatusChip status={report.status} />
-                <span className="text-xs font-semibold bg-stone-100 text-stone-700 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-bold bg-stone-100 text-stone-800 px-3 py-1 rounded-full">
                   {t(`categories.${report.category}`)}
                 </span>
-                <span className="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-black bg-amber-100 text-amber-900 px-3 py-1 rounded-full">
                   Severity: {t(`severities.${report.severity}`)}
                 </span>
-                {report.is_demo && (
-                  <span className="text-xs font-bold bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full">
-                    Demo Fixture
-                  </span>
-                )}
               </div>
 
-              <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 leading-snug">
+              <h1 className="text-2xl sm:text-3xl font-black text-stone-900 leading-tight">
                 {report.title}
               </h1>
 
@@ -140,18 +144,21 @@ export const ReportDetailPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-cream-200 text-xs text-stone-500">
-              <div className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-stone-400 shrink-0" />
-                <span>{report.address}</span>
+            <div className="space-y-2.5 pt-3 border-t border-stone-200/70 text-xs text-stone-500">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-forest-700 shrink-0" />
+                <span className="font-semibold text-stone-700">{report.address}</span>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-stone-400" />
-                  Filed: {new Date(report.created_at).toLocaleDateString()}
+                  Filed on {new Date(report.created_at).toLocaleDateString()}
                 </span>
                 <span>•</span>
-                <span>Reported by: <strong>{report.reporter_name || 'Citizen'}</strong></span>
+                <span className="flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-stone-400" />
+                  Reported by: <strong className="text-stone-800">{report.reporter_name || 'Resident Citizen'}</strong>
+                </span>
               </div>
             </div>
 
@@ -160,7 +167,7 @@ export const ReportDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSupport}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-forest-700 text-white font-semibold text-xs hover:bg-forest-800 transition-colors shadow-2xs active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-forest-700 text-white font-bold text-xs hover:bg-forest-800 transition-all shadow-glow-forest active:scale-95"
               >
                 <ThumbsUp className="w-4 h-4 text-quest" />
                 {t('report_detail.back_report')} ({report.supports_count})
@@ -169,7 +176,7 @@ export const ReportDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowEvidenceModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-600 text-white font-semibold text-xs hover:bg-amber-700 transition-colors shadow-2xs active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-amber-600 text-white font-bold text-xs hover:bg-amber-700 transition-all shadow-sm active:scale-95"
               >
                 <Camera className="w-4 h-4" />
                 Submit Verification Photo (+15 pts)
@@ -180,7 +187,7 @@ export const ReportDetailPage: React.FC = () => {
 
         {/* Resolution Badge if Resolved */}
         {report.status === 'resolved' && (
-          <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-900">
+          <div className="flex items-center gap-2.5 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-xs font-bold text-emerald-950 shadow-2xs">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>
               {report.resolution_type === 'admin_verified'
@@ -194,9 +201,9 @@ export const ReportDetailPage: React.FC = () => {
       {/* Two Column Layout: Evidence Gallery & Audit History */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Evidence Gallery */}
-        <div className="bg-white rounded-3xl border border-cream-300 p-6 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-stone-900">
+        <div className="glass-card rounded-3xl p-6 sm:p-8 space-y-4">
+          <div className="flex items-center justify-between border-b border-stone-200/70 pb-3">
+            <h2 className="text-base font-black text-stone-900">
               {t('report_detail.evidence_gallery')} ({evidence.length})
             </h2>
             <button
@@ -208,7 +215,7 @@ export const ReportDetailPage: React.FC = () => {
           </div>
 
           {evidence.length === 0 ? (
-            <p className="text-xs text-stone-500 py-6 text-center">
+            <p className="text-xs text-stone-500 py-8 text-center leading-relaxed">
               {t('report_detail.no_evidence')}
             </p>
           ) : (
@@ -216,19 +223,19 @@ export const ReportDetailPage: React.FC = () => {
               {evidence.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start gap-3 p-3 rounded-2xl bg-cream-50 border border-cream-200"
+                  className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-stone-50/80 border border-stone-200/70"
                 >
                   <img
                     src={item.image_url}
                     alt="Evidence"
-                    className="w-16 h-16 object-cover rounded-xl border border-stone-200 shrink-0"
+                    className="w-18 h-18 object-cover rounded-xl border border-stone-200 shrink-0 shadow-2xs"
                   />
-                  <div className="space-y-1 text-xs">
-                    <span className="font-semibold text-stone-900 block">
+                  <div className="space-y-1 text-xs flex-1">
+                    <span className="font-bold text-stone-900 block">
                       Submitted by {item.user_name || 'Volunteer Contributor'}
                     </span>
                     <p className="text-stone-600">{item.notes}</p>
-                    <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full inline-block">
+                    <span className="text-[10px] text-emerald-800 font-extrabold bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block">
                       Status: {item.status}
                     </span>
                   </div>
@@ -239,26 +246,29 @@ export const ReportDetailPage: React.FC = () => {
         </div>
 
         {/* Append-only Audit Timeline */}
-        <div className="bg-white rounded-3xl border border-cream-300 p-6 shadow-2xs space-y-4">
-          <h2 className="text-base font-bold text-stone-900">
-            {t('report_detail.status_trail')}
-          </h2>
+        <div className="glass-card rounded-3xl p-6 sm:p-8 space-y-4">
+          <div className="border-b border-stone-200/70 pb-3">
+            <h2 className="text-base font-black text-stone-900">
+              {t('report_detail.status_trail')}
+            </h2>
+            <p className="text-[11px] text-stone-400">Append-only immutable event log</p>
+          </div>
 
-          <div className="space-y-4 border-l-2 border-forest-100 pl-4 ml-2">
+          <div className="space-y-4 border-l-2 border-forest-200 pl-4 ml-2">
             {events.map((event) => (
               <div key={event.id} className="relative space-y-1 text-xs">
-                <div className="absolute -left-[23px] top-1 w-3 h-3 rounded-full bg-forest-700 border-2 border-white" />
+                <div className="absolute -left-[23px] top-1 w-3 h-3 rounded-full bg-forest-700 border-2 border-white shadow-2xs" />
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-stone-900 uppercase tracking-wide">
+                  <span className="font-extrabold text-stone-900 uppercase tracking-wide">
                     {event.to_status.replace('_', ' ')}
                   </span>
-                  <span className="text-[10px] text-stone-400">
+                  <span className="text-[10px] text-stone-400 font-medium">
                     {new Date(event.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <p className="text-stone-600">{event.reason}</p>
-                <span className="text-[10px] text-stone-500 font-medium block">
-                  Actor: {event.actor_name || 'System / Officer'}
+                <p className="text-stone-600 font-medium">{event.reason}</p>
+                <span className="text-[10px] text-stone-400 font-semibold block">
+                  Actor: {event.actor_name || 'System Authority'}
                 </span>
               </div>
             ))}
@@ -268,14 +278,16 @@ export const ReportDetailPage: React.FC = () => {
 
       {/* Submit Evidence Modal */}
       {showEvidenceModal && (
-        <div className="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-xl">
-            <h3 className="text-lg font-bold text-stone-900">
-              {t('quests.modal_evidence_title')}
-            </h3>
-            <p className="text-xs text-stone-500">
-              Submit a clear photo showing repair work in progress or verified completion.
-            </p>
+        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-stone-200">
+            <div>
+              <h3 className="text-lg font-black text-stone-900">
+                {t('quests.modal_evidence_title')}
+              </h3>
+              <p className="text-xs text-stone-500 mt-0.5">
+                Submit a clear photo showing repair work in progress or verified completion.
+              </p>
+            </div>
 
             <form onSubmit={handleEvidenceSubmit} className="space-y-4">
               <div className="space-y-1.5">
@@ -286,11 +298,10 @@ export const ReportDetailPage: React.FC = () => {
                   value={evidencePhotoUrl}
                   onChange={(e) => setEvidencePhotoUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:border-forest-700 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs focus:border-forest-700 outline-none"
                 />
               </div>
 
-              {/* Sample pre-fill for demo convenience */}
               <button
                 type="button"
                 onClick={() =>
@@ -298,7 +309,7 @@ export const ReportDetailPage: React.FC = () => {
                     'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80'
                   )
                 }
-                className="text-[11px] text-forest-700 font-semibold underline block"
+                className="text-[11px] text-forest-700 font-bold underline block"
               >
                 Use sample patch photo (for demo)
               </button>
@@ -312,7 +323,7 @@ export const ReportDetailPage: React.FC = () => {
                   value={evidenceNotes}
                   onChange={(e) => setEvidenceNotes(e.target.value)}
                   placeholder="e.g. Municipal road team arrived with asphalt roller."
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:border-forest-700 outline-none"
+                  className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs focus:border-forest-700 outline-none"
                 />
               </div>
 
@@ -320,14 +331,14 @@ export const ReportDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowEvidenceModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:text-stone-900"
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-stone-600 hover:text-stone-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingEvidence || !evidencePhotoUrl}
-                  className="px-5 py-2 rounded-xl bg-forest-700 text-white text-xs font-bold hover:bg-forest-800 disabled:opacity-50 transition-colors"
+                  className="px-5 py-2.5 rounded-xl bg-forest-700 text-white text-xs font-bold hover:bg-forest-800 disabled:opacity-50 transition-colors shadow-sm"
                 >
                   {submittingEvidence ? 'Submitting...' : t('quests.btn_submit_evidence')}
                 </button>

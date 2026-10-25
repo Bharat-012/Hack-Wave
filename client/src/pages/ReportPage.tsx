@@ -13,6 +13,8 @@ import {
   RefreshCw,
   Info,
   ShieldAlert,
+  Check,
+  Zap,
 } from 'lucide-react';
 import { api } from '../api/client.js';
 import { CityMap } from '../components/Map/CityMap.js';
@@ -172,75 +174,110 @@ export const ReportPage: React.FC = () => {
     }
   };
 
+  const stepsList = [
+    { num: 1, label: t('report_flow.step_photo') },
+    { num: 2, label: t('report_flow.step_location') },
+    { num: 3, label: t('report_flow.step_analysis') },
+    { num: 5, label: t('report_flow.step_confirm') },
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6">
-      {/* Progress Steps Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
-          {t('report_flow.title')}
-        </h1>
-        <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-2 text-xs font-semibold text-stone-500">
-          <span className={`px-3 py-1.5 rounded-lg ${step === 1 ? 'bg-forest-700 text-white' : 'bg-cream-200'}`}>
-            {t('report_flow.step_photo')}
+    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 space-y-8">
+      {/* Title & Progress Stepper */}
+      <div className="space-y-4">
+        <div>
+          <span className="text-xs font-black text-quest uppercase tracking-wider block">
+            Civic Report Intake
           </span>
-          <span>→</span>
-          <span className={`px-3 py-1.5 rounded-lg ${step === 2 ? 'bg-forest-700 text-white' : 'bg-cream-200'}`}>
-            {t('report_flow.step_location')}
-          </span>
-          <span>→</span>
-          <span className={`px-3 py-1.5 rounded-lg ${step === 3 ? 'bg-forest-700 text-white' : 'bg-cream-200'}`}>
-            {t('report_flow.step_analysis')}
-          </span>
-          <span>→</span>
-          <span className={`px-3 py-1.5 rounded-lg ${step === 4 || step === 5 ? 'bg-forest-700 text-white' : 'bg-cream-200'}`}>
-            {t('report_flow.step_confirm')}
-          </span>
+          <h1 className="text-2xl sm:text-4xl font-black text-stone-900 tracking-tight mt-1">
+            {t('report_flow.title')}
+          </h1>
+        </div>
+
+        {/* Sleek Connected Stepper */}
+        <div className="flex items-center justify-between relative max-w-2xl pt-2">
+          <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-stone-200 -translate-y-1/2 -z-0" />
+          {stepsList.map((s) => {
+            const isCompleted = step > s.num;
+            const isCurrent = step === s.num || (step === 4 && s.num === 5);
+            return (
+              <div key={s.num} className="relative z-10 flex flex-col items-center gap-1.5">
+                <div
+                  className={`w-9 h-9 rounded-2xl flex items-center justify-center font-black text-xs transition-all ${
+                    isCompleted
+                      ? 'bg-quest text-white shadow-xs'
+                      : isCurrent
+                      ? 'bg-forest-700 text-white shadow-glow-forest ring-4 ring-forest-100'
+                      : 'bg-white border border-stone-300 text-stone-400'
+                  }`}
+                >
+                  {isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : s.num}
+                </div>
+                <span
+                  className={`text-[11px] font-bold hidden sm:block ${
+                    isCurrent ? 'text-forest-900' : 'text-stone-400'
+                  }`}
+                >
+                  {s.label.split('. ')[1] || s.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* STEP 1: PHOTO CAPTURE */}
       {step === 1 && (
-        <div className="space-y-6 bg-white p-6 sm:p-8 rounded-3xl border border-cream-300 shadow-2xs">
-          <div>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">
+        <div className="glass-card p-6 sm:p-10 rounded-3xl space-y-6">
+          <div className="border-b border-stone-200/70 pb-4">
+            <h2 className="text-xl font-black text-stone-900">
               Step 1: Capture or Select Problem Photo
             </h2>
-            <p className="text-xs text-stone-500">
-              Clear daytime photos help the AI and community verify issues accurately.
+            <p className="text-xs text-stone-500 mt-0.5">
+              Clear daytime photos allow Gemini Vision to extract objective visual indicators.
             </p>
           </div>
 
           {/* Privacy Warning */}
-          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-            <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-            <p>{t('report_flow.privacy_warning')}</p>
+          <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs text-amber-900 shadow-2xs">
+            <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">{t('report_flow.privacy_warning')}</p>
           </div>
 
           {/* Dropzone */}
-          <div className="border-2 border-dashed border-cream-300 rounded-2xl p-8 text-center hover:border-forest-700 transition-colors">
+          <div className="border-2 border-dashed border-stone-300 rounded-3xl p-8 sm:p-12 text-center bg-stone-50/50 hover:bg-white hover:border-forest-700 transition-all">
             {photoUrl ? (
               <div className="space-y-4">
-                <img
-                  src={photoUrl}
-                  alt="Preview"
-                  className="w-full max-h-72 object-cover rounded-xl border border-stone-200 mx-auto"
-                />
-                <button
-                  onClick={() => setPhotoUrl('')}
-                  type="button"
-                  className="text-xs font-semibold text-rose-600 hover:text-rose-800"
-                >
-                  Change Photo
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="w-14 h-14 rounded-full bg-forest-50 text-forest-700 flex items-center justify-center mx-auto">
-                  <Camera className="w-7 h-7" />
+                <div className="relative inline-block rounded-2xl overflow-hidden shadow-md border border-stone-200">
+                  <img
+                    src={photoUrl}
+                    alt="Preview"
+                    className="max-h-80 w-auto object-cover mx-auto"
+                  />
+                  <div className="absolute top-3 right-3 bg-forest-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-quest" />
+                    EXIF Cleaned
+                  </div>
                 </div>
                 <div>
-                  <label className="cursor-pointer text-sm font-bold text-forest-700 hover:text-forest-900">
-                    Upload from Device
+                  <button
+                    onClick={() => setPhotoUrl('')}
+                    type="button"
+                    className="text-xs font-bold text-rose-600 hover:text-rose-800 underline"
+                  >
+                    Remove and Choose Another
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4 max-w-sm mx-auto">
+                <div className="w-16 h-16 rounded-3xl bg-forest-50 text-forest-700 flex items-center justify-center mx-auto shadow-2xs">
+                  <Camera className="w-8 h-8 text-forest-700" />
+                </div>
+                <div>
+                  <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-forest-700 text-white font-bold text-xs hover:bg-forest-800 transition-colors shadow-sm">
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload Photo from Device
                     <input
                       type="file"
                       accept="image/*"
@@ -248,7 +285,7 @@ export const ReportPage: React.FC = () => {
                       className="hidden"
                     />
                   </label>
-                  <p className="text-xs text-stone-500 mt-1">PNG, JPG or WebP up to 10MB</p>
+                  <p className="text-xs text-stone-400 mt-2">PNG, JPG or WebP up to 10MB</p>
                 </div>
               </div>
             )}
@@ -256,48 +293,49 @@ export const ReportPage: React.FC = () => {
 
           {/* Sample Photos for Demo Walkthrough */}
           <div className="space-y-3 pt-2">
-            <span className="text-xs font-bold text-stone-600 uppercase tracking-wider block">
+            <span className="text-xs font-black text-stone-600 uppercase tracking-wider block">
               {t('report_flow.dropzone_sample')}
             </span>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               {SAMPLE_PHOTOS.map((sample) => (
                 <button
                   key={sample.name}
                   type="button"
                   onClick={() => handleSelectSample(sample)}
-                  className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition-all ${
+                  className={`flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
                     photoUrl === sample.url
-                      ? 'border-forest-700 bg-forest-50 font-bold'
-                      : 'border-cream-300 hover:bg-cream-100'
+                      ? 'border-forest-700 bg-forest-50/80 shadow-xs'
+                      : 'border-stone-200/80 bg-white hover:bg-stone-50'
                   }`}
                 >
                   <img
                     src={sample.url}
                     alt={sample.name}
-                    className="w-12 h-12 rounded-lg object-cover"
+                    className="w-14 h-14 rounded-xl object-cover shrink-0"
                   />
-                  <div>
-                    <span className="text-xs font-semibold text-stone-900 block leading-tight">
+                  <div className="overflow-hidden">
+                    <span className="text-xs font-black text-stone-900 block truncate">
                       {sample.name}
                     </span>
-                    <span className="text-[10px] text-stone-500">
+                    <span className="text-[10px] font-semibold text-stone-500 block truncate">
                       {t(`categories.${sample.category}`)}
                     </span>
+                    <span className="text-[9px] text-quest-dark font-bold">Click to load</span>
                   </div>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex justify-end pt-4 border-t border-cream-200">
+          <div className="flex justify-end pt-4 border-t border-stone-200/70">
             <button
               disabled={!photoUrl}
               onClick={() => setStep(2)}
               type="button"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-forest-700 text-white font-semibold text-sm hover:bg-forest-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-forest-700 text-white font-bold text-xs hover:bg-forest-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-glow-forest active:scale-95"
             >
               Continue to Location Pin
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-quest" />
             </button>
           </div>
         </div>
@@ -305,13 +343,13 @@ export const ReportPage: React.FC = () => {
 
       {/* STEP 2: LOCATION PIN */}
       {step === 2 && (
-        <div className="space-y-6 bg-white p-6 sm:p-8 rounded-3xl border border-cream-300 shadow-2xs">
-          <div>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">
+        <div className="glass-card p-6 sm:p-10 rounded-3xl space-y-6">
+          <div className="border-b border-stone-200/70 pb-4">
+            <h2 className="text-xl font-black text-stone-900">
               Step 2: Place Issue Location Pin
             </h2>
-            <p className="text-xs text-stone-500">
-              Click anywhere on the map to pin the exact coordinates of the issue.
+            <p className="text-xs text-stone-500 mt-0.5">
+              Click anywhere on the map to pin the coordinates of the problem.
             </p>
           </div>
 
@@ -322,34 +360,34 @@ export const ReportPage: React.FC = () => {
               setLocation({ lat, lng });
               setAddress(`Coordinate Point: ${lat.toFixed(4)}, ${lng.toFixed(4)} (New Delhi)`);
             }}
-            height="360px"
+            height="380px"
           />
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-stone-700 block">
+          <div className="space-y-1.5">
+            <label className="text-xs font-extrabold text-stone-700 block">
               {t('report_flow.address_label')}
             </label>
             <input
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-forest-700 outline-none"
+              className="w-full px-4 py-3 rounded-2xl border border-stone-300 text-sm font-semibold focus:border-forest-700 focus:ring-2 focus:ring-forest-100 outline-none transition-all"
               placeholder="e.g. Karol Bagh Market, New Delhi"
             />
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-cream-200">
+          <div className="flex items-center justify-between pt-4 border-t border-stone-200/70">
             <button
               onClick={() => setStep(1)}
               type="button"
-              className="text-xs font-semibold text-stone-600 hover:text-stone-900"
+              className="text-xs font-bold text-stone-600 hover:text-stone-900"
             >
               Back
             </button>
             <button
               onClick={runAiAnalysis}
               type="button"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-forest-700 text-white font-semibold text-sm hover:bg-forest-800 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-forest-700 text-white font-bold text-xs hover:bg-forest-800 transition-all shadow-glow-forest active:scale-95"
             >
               <Sparkles className="w-4 h-4 text-quest" />
               Analyze with Gemini AI
@@ -360,34 +398,37 @@ export const ReportPage: React.FC = () => {
 
       {/* STEP 3: GEMINI AI ANALYSIS & USER EDITING */}
       {step === 3 && (
-        <div className="space-y-6 bg-white p-6 sm:p-8 rounded-3xl border border-cream-300 shadow-2xs">
+        <div className="glass-card p-6 sm:p-10 rounded-3xl space-y-6">
           {analyzing ? (
-            <div className="py-16 text-center space-y-4">
-              <RefreshCw className="w-10 h-10 text-quest animate-spin mx-auto" />
-              <h3 className="text-base font-bold text-stone-900">
+            <div className="py-20 text-center space-y-4">
+              <div className="relative inline-block">
+                <RefreshCw className="w-12 h-12 text-quest animate-spin mx-auto" />
+                <Sparkles className="w-5 h-5 text-amber-500 absolute -top-1 -right-1" />
+              </div>
+              <h3 className="text-lg font-black text-stone-900">
                 {t('report_flow.analyzing_prompt')}
               </h3>
               <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                Validating physical indicators and screening safety bounds without human assumptions.
+                Gemini 2.5 Flash Vision inspecting visible aggregate breakdown & infrastructure safety boundaries.
               </p>
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200/70 pb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-stone-900 mb-1">
+                  <h2 className="text-xl font-black text-stone-900">
                     Step 3: Review AI Diagnosis & Edit Details
                   </h2>
-                  <p className="text-xs text-stone-500">
+                  <p className="text-xs text-stone-500 mt-0.5">
                     {t('report_flow.ai_disclaimer')}
                   </p>
                 </div>
                 {analysisResult && (
                   <span
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold border shadow-2xs self-start ${
                       analysisResult.source === 'gemini'
-                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                        : 'bg-amber-50 text-amber-900 border-amber-200'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                        : 'bg-amber-50 text-amber-900 border-amber-300'
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -399,27 +440,27 @@ export const ReportPage: React.FC = () => {
               </div>
 
               {/* Editable Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-xs font-bold text-stone-700">
+                  <label className="text-xs font-black text-stone-700 uppercase tracking-wide">
                     {t('report_flow.field_title')}
                   </label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-forest-700 outline-none font-semibold"
+                    className="w-full px-4 py-3 rounded-2xl border border-stone-300 text-sm font-bold focus:border-forest-700 outline-none"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-stone-700">
+                  <label className="text-xs font-black text-stone-700 uppercase tracking-wide">
                     {t('report_flow.field_category')}
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as ReportCategory)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-forest-700 outline-none"
+                    className="w-full px-4 py-3 rounded-2xl border border-stone-300 text-sm font-semibold focus:border-forest-700 outline-none bg-white"
                   >
                     <option value="roads_potholes">Roads & Potholes</option>
                     <option value="streetlights_electricity">Streetlights & Electricity</option>
@@ -431,13 +472,13 @@ export const ReportPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-stone-700">
+                  <label className="text-xs font-black text-stone-700 uppercase tracking-wide">
                     {t('report_flow.field_severity')}
                   </label>
                   <select
                     value={severity}
                     onChange={(e) => setSeverity(e.target.value as ReportSeverity)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-forest-700 outline-none font-semibold text-amber-700"
+                    className="w-full px-4 py-3 rounded-2xl border border-stone-300 text-sm font-bold text-amber-700 focus:border-forest-700 outline-none bg-white"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -447,27 +488,32 @@ export const ReportPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-xs font-bold text-stone-700">
+                  <label className="text-xs font-black text-stone-700 uppercase tracking-wide">
                     {t('report_flow.field_description')}
                   </label>
                   <textarea
                     rows={3}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:border-forest-700 outline-none"
+                    className="w-full px-4 py-3 rounded-2xl border border-stone-300 text-sm font-medium focus:border-forest-700 outline-none"
                   />
                 </div>
               </div>
 
               {/* AI Telemetry Breakdown */}
               {analysisResult && (
-                <div className="p-4 rounded-2xl bg-cream-50 border border-cream-300 space-y-3 text-xs">
-                  <span className="font-bold text-stone-800 uppercase tracking-wider block">
-                    AI Visual Telemetry
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-extrabold text-stone-800 uppercase tracking-wider">
+                      AI Visual Telemetry
+                    </span>
+                    <span className="text-[11px] font-bold text-stone-500">
+                      Confidence: <strong className="text-forest-900 uppercase">{analysisResult.confidence}</strong>
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <span className="font-semibold text-stone-600 block mb-1">
+                      <span className="font-bold text-stone-600 block mb-1">
                         {t('report_flow.field_visible_evidence')}:
                       </span>
                       <ul className="list-disc pl-4 space-y-0.5 text-stone-700">
@@ -477,7 +523,7 @@ export const ReportPage: React.FC = () => {
                       </ul>
                     </div>
                     <div>
-                      <span className="font-semibold text-stone-600 block mb-1">
+                      <span className="font-bold text-stone-600 block mb-1">
                         {t('report_flow.field_missing_info')}:
                       </span>
                       <ul className="list-disc pl-4 space-y-0.5 text-stone-700">
@@ -490,21 +536,21 @@ export const ReportPage: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t border-cream-200">
+              <div className="flex items-center justify-between pt-4 border-t border-stone-200/70">
                 <button
                   onClick={() => setStep(2)}
                   type="button"
-                  className="text-xs font-semibold text-stone-600 hover:text-stone-900"
+                  className="text-xs font-bold text-stone-600 hover:text-stone-900"
                 >
                   Back
                 </button>
                 <button
                   onClick={checkDuplicatesAndProceed}
                   type="button"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-forest-700 text-white font-semibold text-sm hover:bg-forest-800 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-forest-700 text-white font-bold text-xs hover:bg-forest-800 transition-all shadow-glow-forest active:scale-95"
                 >
                   Check Nearby Duplicates
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-quest" />
                 </button>
               </div>
             </div>
@@ -514,41 +560,41 @@ export const ReportPage: React.FC = () => {
 
       {/* STEP 4: DUPLICATES RADAR (If nearby candidates exist) */}
       {step === 4 && (
-        <div className="space-y-6 bg-white p-6 sm:p-8 rounded-3xl border border-cream-300 shadow-2xs">
-          <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200">
+        <div className="glass-card p-6 sm:p-10 rounded-3xl space-y-6">
+          <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-amber-50 border border-amber-200">
             <AlertTriangle className="w-6 h-6 text-amber-700 shrink-0 mt-0.5" />
             <div>
-              <h2 className="text-base font-bold text-amber-900">
+              <h2 className="text-base font-extrabold text-amber-900">
                 {t('report_flow.duplicate_alert_title')}
               </h2>
-              <p className="text-xs text-amber-800 mt-1">
+              <p className="text-xs text-amber-800 mt-1 leading-relaxed">
                 {t('report_flow.duplicate_alert_desc')}
               </p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <span className="text-xs font-bold text-stone-600 uppercase tracking-wider block">
-              Candidate Matches ({duplicates.length})
+            <span className="text-xs font-black text-stone-600 uppercase tracking-wider block">
+              Candidate Matches Within 100m ({duplicates.length})
             </span>
             {duplicates.map((dup) => (
               <div
                 key={dup.report.id}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl border border-cream-300 bg-cream-50"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl border border-stone-200 bg-stone-50"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3.5">
                   <img
                     src={dup.report.image_url}
                     alt={dup.report.title}
-                    className="w-16 h-16 rounded-xl object-cover"
+                    className="w-16 h-16 rounded-2xl object-cover shrink-0"
                   />
                   <div>
                     <h3 className="font-bold text-sm text-stone-900">{dup.report.title}</h3>
                     <p className="text-xs text-stone-500 line-clamp-1">{dup.report.address}</p>
-                    <div className="flex items-center gap-2 mt-1 text-[11px] font-medium text-stone-600">
-                      <span>Distance: {dup.distanceMeters}m away</span>
+                    <div className="flex items-center gap-2 mt-1 text-[11px] font-bold text-forest-700">
+                      <span>{dup.distanceMeters}m away</span>
                       <span>•</span>
-                      <span>Similarity Score: {(dup.score * 100).toFixed(0)}%</span>
+                      <span>Similarity: {(dup.score * 100).toFixed(0)}%</span>
                     </div>
                   </div>
                 </div>
@@ -556,7 +602,7 @@ export const ReportPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleBackExisting(dup.report.id)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-forest-700 text-white text-xs font-semibold hover:bg-forest-800 transition-colors shrink-0"
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-forest-700 text-white text-xs font-bold hover:bg-forest-800 transition-colors shrink-0"
                 >
                   <ThumbsUp className="w-3.5 h-3.5 text-quest" />
                   {t('report_flow.btn_back_existing')}
@@ -565,18 +611,18 @@ export const ReportPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-cream-200">
+          <div className="flex items-center justify-between pt-4 border-t border-stone-200/70">
             <button
               onClick={() => setStep(3)}
               type="button"
-              className="text-xs font-semibold text-stone-600 hover:text-stone-900"
+              className="text-xs font-bold text-stone-600 hover:text-stone-900"
             >
               Back & Edit
             </button>
             <button
               onClick={() => setStep(5)}
               type="button"
-              className="px-5 py-2.5 rounded-xl border border-stone-300 text-xs font-bold text-stone-700 hover:bg-cream-100 transition-colors"
+              className="px-5 py-2.5 rounded-2xl border border-stone-300 text-xs font-bold text-stone-700 hover:bg-stone-100 transition-colors"
             >
               {t('report_flow.btn_submit_anyway')}
             </button>
@@ -586,30 +632,40 @@ export const ReportPage: React.FC = () => {
 
       {/* STEP 5: CONFIRM & SUBMIT */}
       {step === 5 && (
-        <div className="space-y-6 bg-white p-6 sm:p-8 rounded-3xl border border-cream-300 shadow-2xs">
-          <div>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">
+        <div className="glass-card p-6 sm:p-10 rounded-3xl space-y-6">
+          <div className="border-b border-stone-200/70 pb-4">
+            <h2 className="text-xl font-black text-stone-900">
               Final Review: Confirm & Submit to City Ledger
             </h2>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-500 mt-0.5">
               Your report will be publicly visible and open for neighborhood verification.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 p-4 rounded-2xl bg-cream-50 border border-cream-300">
+          <div className="flex flex-col sm:flex-row gap-6 p-5 rounded-2xl bg-stone-50 border border-stone-200">
             <img
               src={photoUrl}
               alt="Preview"
-              className="w-full sm:w-48 h-48 object-cover rounded-xl border border-stone-200 shrink-0"
+              className="w-full sm:w-52 h-52 object-cover rounded-2xl border border-stone-200 shrink-0"
             />
-            <div className="space-y-2 text-sm">
-              <h3 className="font-bold text-base text-stone-900">{title}</h3>
-              <p className="text-xs text-stone-600">{description}</p>
+            <div className="space-y-3 text-sm flex-1">
+              <div>
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wide">
+                  Title
+                </span>
+                <h3 className="font-extrabold text-base text-stone-900">{title}</h3>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wide">
+                  Description
+                </span>
+                <p className="text-xs text-stone-600 line-clamp-3">{description}</p>
+              </div>
               <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span className="font-medium bg-stone-200 px-2.5 py-1 rounded-md">
+                <span className="font-bold bg-stone-200 text-stone-800 px-2.5 py-1 rounded-lg">
                   {t(`categories.${category}`)}
                 </span>
-                <span className="font-semibold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-md">
+                <span className="font-bold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg">
                   Severity: {t(`severities.${severity}`)}
                 </span>
                 <span className="font-medium text-stone-500">
@@ -619,11 +675,11 @@ export const ReportPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-cream-200">
+          <div className="flex items-center justify-between pt-4 border-t border-stone-200/70">
             <button
               onClick={() => setStep(3)}
               type="button"
-              className="text-xs font-semibold text-stone-600 hover:text-stone-900"
+              className="text-xs font-bold text-stone-600 hover:text-stone-900"
             >
               Back & Edit
             </button>
@@ -631,7 +687,7 @@ export const ReportPage: React.FC = () => {
               disabled={submitting}
               onClick={handleSubmitReport}
               type="button"
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-forest-700 text-white font-bold text-sm hover:bg-forest-800 disabled:opacity-50 transition-colors shadow-md active:scale-95"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-forest-700 text-white font-black text-sm hover:bg-forest-800 disabled:opacity-50 transition-all shadow-glow-forest active:scale-95"
             >
               {submitting ? (
                 <>
@@ -651,13 +707,13 @@ export const ReportPage: React.FC = () => {
 
       {/* STEP 6: SUCCESS */}
       {step === 6 && (
-        <div className="text-center py-12 px-6 bg-white rounded-3xl border border-cream-300 shadow-2xs space-y-6">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-9 h-9" />
+        <div className="text-center py-16 px-6 glass-card rounded-3xl space-y-6">
+          <div className="w-20 h-20 rounded-3xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-sm">
+            <CheckCircle2 className="w-10 h-10" />
           </div>
 
           <div className="space-y-2 max-w-md mx-auto">
-            <h2 className="text-2xl font-extrabold text-stone-900">
+            <h2 className="text-2xl sm:text-3xl font-black text-stone-900">
               {t('report_flow.success_title')}
             </h2>
             <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
@@ -670,7 +726,7 @@ export const ReportPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate(`/reports/${submittedReportId}`)}
-                className="px-6 py-2.5 rounded-xl bg-forest-700 text-white font-semibold text-sm hover:bg-forest-800 transition-colors"
+                className="px-6 py-3 rounded-2xl bg-forest-700 text-white font-bold text-xs hover:bg-forest-800 transition-all shadow-glow-forest"
               >
                 {t('report_flow.btn_view_report')}
               </button>
@@ -678,7 +734,7 @@ export const ReportPage: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/explore')}
-              className="px-6 py-2.5 rounded-xl border border-stone-300 text-stone-700 font-semibold text-sm hover:bg-cream-100 transition-colors"
+              className="px-6 py-3 rounded-2xl border border-stone-300 text-stone-700 font-bold text-xs hover:bg-stone-50 transition-colors"
             >
               {t('report_flow.btn_view_map')}
             </button>
