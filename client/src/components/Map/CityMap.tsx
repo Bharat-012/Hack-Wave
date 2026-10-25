@@ -19,7 +19,7 @@ export const CityMap: React.FC<CityMapProps> = ({
   selectedLocation,
   onSelectLocation,
   interactiveSelect = false,
-  center = [28.6448, 77.2167], // Default to Delhi civic center
+  center = [23.2599, 77.4126], // Default to Bhopal civic center
   zoom = 13,
   height = '500px',
   onReportClick,

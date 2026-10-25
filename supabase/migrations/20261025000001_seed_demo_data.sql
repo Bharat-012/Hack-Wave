@@ -25,7 +25,7 @@ INSERT INTO user_badges (user_id, badge_id) VALUES
 ('a0000000-0000-0000-0000-000000000002', 'neighborhood_guardian')
 ON CONFLICT (user_id, badge_id) DO NOTHING;
 
--- 4. SEED DEMO REPORTS (Centered around New Delhi civic coords)
+-- 4. SEED DEMO REPORTS (Centered around Bhopal civic coords)
 INSERT INTO reports (
     id, reporter_id, title, description, category, severity, status,
     latitude, longitude, address, image_url, ai_analysis, supports_count, evidence_count, is_demo
@@ -33,14 +33,14 @@ INSERT INTO reports (
 (
     'b0000000-0000-0000-0000-000000000001',
     'a0000000-0000-0000-0000-000000000001',
-    'Deep Asphalt Pothole near Main Market Crossing',
+    'Deep Asphalt Pothole near MP Nagar Crossing',
     'Large pothole expanding rapidly after monsoon showers. Vehicles swerving into oncoming traffic.',
     'roads_potholes',
     'high',
     'verified',
-    28.6448,
-    77.2167,
-    'Ajmal Khan Road, Karol Bagh, New Delhi',
+    23.2599,
+    77.4126,
+    'MP Nagar Zone-1, Near Chetak Bridge, Bhopal',
     'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
     '{"category": "roads_potholes", "description": "Severely degraded asphalt with visible aggregate breakdown spanning approximately 1.2 meters.", "visible_evidence": ["loose gravel", "cracked bitumen edges", "standing puddle"], "suggested_severity": "high", "confidence": "high", "missing_information": ["sub-base water saturation depth"]}'::jsonb,
     14,
@@ -50,14 +50,14 @@ INSERT INTO reports (
 (
     'b0000000-0000-0000-0000-000000000002',
     'a0000000-0000-0000-0000-000000000002',
-    'Broken Streetlight Fixture Dangling near School Gate',
+    'Broken Streetlight Fixture Dangling near VIP Road Promenade',
     'Luminaire housing is detached from bracket and dangling by wiring, posing an immediate electrical and impact hazard.',
     'streetlights_electricity',
     'critical',
     'in_progress',
-    28.6505,
-    77.2212,
-    'Near Government Boys Senior Secondary School, Jhandewalan, New Delhi',
+    23.2505,
+    77.3820,
+    'Near Lake View School, VIP Road Promenade, Bhopal',
     'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
     '{"category": "streetlights_electricity", "description": "Overhead street luminaire separated from mount, suspended solely by electrical cable.", "visible_evidence": ["hanging fixture", "exposed conduit", "pedestrian sidewalk proximity"], "suggested_severity": "critical", "confidence": "high", "missing_information": ["live voltage status"]}'::jsonb,
     26,
@@ -67,14 +67,14 @@ INSERT INTO reports (
 (
     'b0000000-0000-0000-0000-000000000003',
     'a0000000-0000-0000-0000-000000000001',
-    'Overflowing Dumpster and Plastic Waste Accumulation',
+    'Overflowing Dumpster and Plastic Waste Accumulation near New Market',
     'Public municipal bin has not been cleared for over 4 days, resulting in waste scattering onto the pedestrian footpath.',
     'sanitation_garbage',
     'medium',
     'awaiting_resolution_verification',
-    28.6389,
-    77.2111,
-    'Pusa Road Junction, New Delhi',
+    23.2332,
+    77.4010,
+    'Top N Town Crossing, New Market, TT Nagar, Bhopal',
     'https://images.unsplash.com/photo-1605600659873-d808a13e4d2a?auto=format&fit=crop&w=800&q=80',
     '{"category": "sanitation_garbage", "description": "Commercial refuse bin overflowing onto pedestrian right-of-way.", "visible_evidence": ["scattered plastic bags", "uncontained organic waste", "sidewalk obstruction"], "suggested_severity": "medium", "confidence": "high", "missing_information": ["scheduled municipal pickup timing"]}'::jsonb,
     8,
@@ -99,7 +99,7 @@ INSERT INTO quests (
 (
     'c0000000-0000-0000-0000-000000000001',
     'b0000000-0000-0000-0000-000000000001',
-    'Mission: Karol Bagh Pothole Evidence Patrol',
+    'Mission: MP Nagar Pothole Evidence Patrol',
     'Rally nearby residents to safely photograph repair progress and confirm municipal asphalt patch completion.',
     '[{"action": "Check repair perimeter", "safe": true, "note": "Stand on pedestrian walkway only; do not step into traffic."}, {"action": "Submit after-fix photo", "safe": true, "note": "Capture asphalt patch when road crew finishes."}]'::jsonb,
     'active',
@@ -111,7 +111,7 @@ INSERT INTO quests (
 (
     'c0000000-0000-0000-0000-000000000003',
     'b0000000-0000-0000-0000-000000000003',
-    'Mission: Pusa Road Clean Footpath Verification',
+    'Mission: New Market Clean Footpath Verification',
     'Verify waste clearance and document that the pedestrian pathway is clear and accessible.',
     '[{"action": "Document bin clearance", "safe": true, "note": "Take daytime photo showing cleared bin and sidewalk."}, {"action": "Check drainage grill", "safe": true, "note": "Ensure storm runoff drain next to bin is unobstructed."}]'::jsonb,
     'active',

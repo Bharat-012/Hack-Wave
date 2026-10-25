@@ -15,18 +15,42 @@
   }
 }
 
-@layer components {
-  .glass-card {
-    @apply bg-white/85 backdrop-blur-md border border-stone-200/70 shadow-glass transition-all duration-300;
+@layer utilities {
+  .shadow-glass {
+    box-shadow: 0 8px 32px 0 rgba(14, 31, 22, 0.08);
   }
-  
-  .glass-card:hover {
-    @apply shadow-glass-hover -translate-y-0.5 border-stone-300/80;
+  .shadow-glass-hover {
+    box-shadow: 0 12px 40px 0 rgba(14, 31, 22, 0.14);
   }
+  .shadow-glow-quest {
+    box-shadow: 0 0 25px -5px rgba(101, 163, 13, 0.3);
+  }
+  .shadow-glow-forest {
+    box-shadow: 0 0 25px -5px rgba(27, 59, 43, 0.25);
+  }
+}
 
-  .glass-panel {
-    @apply bg-white/95 backdrop-blur-lg border border-stone-200/80 shadow-sm;
-  }
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(231, 229, 228, 0.7);
+  box-shadow: 0 8px 32px 0 rgba(14, 31, 22, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(14, 31, 22, 0.14);
+  transform: translateY(-2px);
+  border-color: rgba(214, 211, 209, 0.8);
+}
+
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(231, 229, 228, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 /* Custom Leaflet Map styling */

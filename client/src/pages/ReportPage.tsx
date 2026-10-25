@@ -51,10 +51,10 @@ export const ReportPage: React.FC = () => {
   const [photoUrl, setPhotoUrl] = useState<string>('');
   const [photoBase64, setPhotoBase64] = useState<string>('');
   const [location, setLocation] = useState<{ lat: number; lng: number }>({
-    lat: 28.6448,
-    lng: 77.2167,
+    lat: 23.2599,
+    lng: 77.4126,
   });
-  const [address, setAddress] = useState<string>('Karol Bagh, New Delhi');
+  const [address, setAddress] = useState<string>('MP Nagar Zone-1, Bhopal');
 
   // AI & Form Fields
   const [analyzing, setAnalyzing] = useState<boolean>(false);
@@ -358,7 +358,7 @@ export const ReportPage: React.FC = () => {
             selectedLocation={location}
             onSelectLocation={(lat, lng) => {
               setLocation({ lat, lng });
-              setAddress(`Coordinate Point: ${lat.toFixed(4)}, ${lng.toFixed(4)} (New Delhi)`);
+              setAddress(`Coordinate Point: ${lat.toFixed(4)}, ${lng.toFixed(4)} (Bhopal)`);
             }}
             height="380px"
           />
@@ -372,7 +372,7 @@ export const ReportPage: React.FC = () => {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               className="w-full px-4 py-3 rounded-2xl border border-stone-300 text-sm font-semibold focus:border-forest-700 focus:ring-2 focus:ring-forest-100 outline-none transition-all"
-              placeholder="e.g. Karol Bagh Market, New Delhi"
+              placeholder="e.g. DB City Mall, MP Nagar, Bhopal"
             />
           </div>
 
