@@ -5,11 +5,35 @@ Format follows Keep a Changelog (Added, Changed, Fixed, Security).
 
 ---
 
-## [Unreleased]
+## [1.0.0] - 2026-10-25
 
-### Added - 2026-10-25 (Phase 0 & Phase 1)
-- Initialized clean git repository with remote origin `Bharat-012/Hack-Wave`.
-- Authored `.gitignore` protecting `.env`, credentials, local caches, and build outputs.
-- Authored comprehensive `AGENTS.md` defining code conventions, honest reporting, and security boundaries.
-- Authored `docs/REFERENCE_ANALYSIS.md` analyzing 4 civic tech reference repositories (`marvillage/civicfix`, `Jyatin/-fixmyway`, `AnshiPandey/CivicAI`, `bagde-priyanshi/civiclens-ai`) and detailing PatchMyCity originality.
-- Established project memory documents: `docs/PROJECT_CONTEXT.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`, `docs/DEPENDENCY_MAP.md`, `docs/HANDOFF.md`, and `docs/DEMO_SCRIPT.md`.
+### Added
+- **Full-Stack Architecture:**
+  - Single coherent repository with `server/` (Express, TypeScript, Zod, Helmet, Rate Limiter) and `client/` (React, Vite, TypeScript, Tailwind CSS, Leaflet).
+  - Versioned PostgreSQL schema migrations (`supabase/migrations/`) with Row Level Security (RLS) policies and seed data (`is_demo = TRUE`).
+- **Google Gemini 2.5 Flash Vision Integration:**
+  - Dedicated backend service `server/src/services/gemini.ts` using official `@google/generative-ai` SDK.
+  - Zod structured output validation for image diagnostics, translation, and quest generation.
+  - Prompt-injection sanitization and transparent Mock Mode fallback when API credentials are absent.
+- **Enforced Lifecycle State Machine:**
+  - Strict server-side state transitions following Section 5.1 domain rules.
+  - Immutable append-only audit trail (`report_events`) tracking actor, from_status, to_status, and justification.
+  - Verification requirements: minimum accepted evidence and admin or community confirmations.
+- **Geospatial & Weighted Duplicate Radar:**
+  - Haversine distance screening (max 100 meters, within 30 days).
+  - Multi-factor scoring (distance 0.5, category 0.3, time 0.2) with 0.6 threshold preventing duplicate clutter.
+- **Deterministic Points & Badges Engine:**
+  - Unique composite idempotency key `{event_type}:{source_id}:{user_id}` on all point transactions.
+  - Daily point caps preventing farming.
+  - Rule-based badges: First Spark, Evidence Hero, Quest Squad Member, Neighborhood Guardian.
+- **City Quest Mode (Signature Innovation):**
+  - Verified issues unlock collaborative neighborhood missions.
+  - Safety screening prohibiting hazardous manual repair instructions.
+  - Squad enlistment and photographic evidence submissions.
+- **Bilingual & Accessible UI:**
+  - Seamless English and Hindi (Devanagari) internationalization (`en.json`, `hi.json`).
+  - Accessible list alternative to the interactive map (`ReportListView`).
+  - WCAG AA high-contrast design system.
+- **End-to-End Verification:**
+  - Vitest test suite with 14 passing unit and integration tests across state machine, points idempotency, duplicate radar, and API routes.
+  - Automated browser subagent recording full demo journey (`full_demo_journey_1792913788766.webp`).
