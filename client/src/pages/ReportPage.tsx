@@ -51,10 +51,10 @@ export const ReportPage: React.FC = () => {
   const [photoUrl, setPhotoUrl] = useState<string>('');
   const [photoBase64, setPhotoBase64] = useState<string>('');
   const [location, setLocation] = useState<{ lat: number; lng: number }>({
-    lat: 23.2599,
-    lng: 77.4126,
+    lat: 23.2325,
+    lng: 77.4330,
   });
-  const [address, setAddress] = useState<string>('MP Nagar Zone-1, Bhopal');
+  const [address, setAddress] = useState<string>('MP Nagar Zone-1, near DB Mall, Bhopal');
 
   // AI & Form Fields
   const [analyzing, setAnalyzing] = useState<boolean>(false);

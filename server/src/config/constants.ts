@@ -39,10 +39,10 @@ export const DOMAIN_RULES = {
     DAILY_POINT_CAP: 60, // resists farming
   },
 
-  // Default coordinates (e.g. Bhopal civic center for initial viewport)
+  // Default coordinates (Centered on Bhopal civic hub)
   DEFAULT_LOCATION: {
-    LATITUDE: 23.2599,
-    LONGITUDE: 77.4126,
+    LATITUDE: 23.2420,
+    LONGITUDE: 77.4120,
     CITY: 'Bhopal',
   },
 };

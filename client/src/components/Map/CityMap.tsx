@@ -19,7 +19,7 @@ export const CityMap: React.FC<CityMapProps> = ({
   selectedLocation,
   onSelectLocation,
   interactiveSelect = false,
-  center = [23.2599, 77.4126], // Default to Bhopal civic center
+  center = [23.2420, 77.4120], // Centered on Bhopal civic hub (MP Nagar, New Market, Lake Promenade)
   zoom = 13,
   height = '500px',
   onReportClick,
